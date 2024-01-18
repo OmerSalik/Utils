@@ -42,7 +42,8 @@ class Functions {
       text = text.replace('(','').replace(')','');
       if(text[0] == '5' && text.length == 10) data = '+90 (' + text.slice(0, 3) + ') ' + text.slice(3, 6) + ' ' + text.slice(6, 10);
       else if(text[0] == '0' && text.length == 11) data = '+90 (' + text.slice(1, 4) + ') ' + text.slice(4, 7) + ' ' + text.slice(7, 11);
-      else if(text[0] == '+' && text.length == 13) data = text.slice(0, 3) + ' (' + text.slice(3, 6) + ') ' + text.slice(6,9) + ' ' + text.slice(9, 13);
+      else if(text[0] == '9' && text.length == 12) data = '+90 (' + text.slice(2, 5) + ') ' + text.slice(5, 8) + ' ' + text.slice(8, 12);
+      else if(text[0] == '+' && text.length == 13) data = '+90 (' + text.slice(3, 6) + ') ' + text.slice(6,9) + ' ' + text.slice(9, 13);
     }
     return {mailMi: isThisMail, DATA: data};
   }

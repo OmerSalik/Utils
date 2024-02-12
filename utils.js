@@ -1,9 +1,7 @@
 class Functions {
-  constructor() {
-    this.isTimerActive = false;
-    this.timerName = null;
-    this.Variables = {};
-  }
+  constructor() { this.whenLoad(this.setStyle) }s
+  Style = `#fixed-container, *[modal-name], #utilTimer { top: 0; left: 0; right: 0; bottom: 0; display: flex; position: fixed; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, .3); } #utilTimer { color: green; font-weight: bold; font-size: xx-large; }`;
+  Timer = { active: false }
   c = () => console.clear();
   clear = () => console.clear();
   mf = number => Math.floor(number);
@@ -30,6 +28,34 @@ class Functions {
   display = (element,d='block') => element.style.display=element.style.display==d?'none':d;
   variables = (key, value) => {if(value)this.Variables[key]=value;return this.Variables[key];};
   adv = (selector, event, fun) => this.qsa(selector).forEach(el => el.addEventListener(event, fun));
+  setStyle = () => this.gid('utilStyle') ? this.gid('utilStyle').innerHTML = this.Style : document.body.innerHTML += `<style id="utilStyle">${this.Style}</style>`;
+  modal = modalName => this.qs(`[modal-name="${modalName}"]`) ? this.qs(`[modal-name="${modalName}"]`).style.display == 'none' ? 'flex' : 'none' : this.error(`Modal '${modalName}' not found.`);
+  timer = (duration = 3, extraFeatures = { function: () => {}, type: 'second', style: {} }, ...argList) => {
+    return new Promise(async (resolve) => {
+      let { active } = this.Timer;
+      if(!active) {
+        this.Timer.active = true;
+        if(!extraFeatures.type) extraFeatures.type = 'second'; if(!extraFeatures.style) extraFeatures.style = {};
+        this.gid('utilTimer') ? this.gid('utilTimer').remove() : document.body.innerHTML += '<div id="utilTimer"></div>';
+        let el = this.gid('utilTimer');
+        Object.keys(extraFeatures.style).forEach(key => el.style[key] = extraFeatures.style[key]);
+        while (duration > 0) {
+          el.innerHTML = extraFeatures.type == 'second' ? duration : duration.toFixed(2);
+          await this.w(extraFeatures.type == 'second' ? 1 : .01);
+          duration -= extraFeatures.type == 'second' ? 1 : .01;
+        }
+        el.remove();
+        this.Timer.active = false;
+        extraFeatures.function(...argList);
+        resolve('Timer finished');
+        return;
+      } else {
+        this.error('Timer is already active');
+        resolve('Timer is already active');
+        return;
+      }
+    })
+  }
   mailOrPhone = text => {
     text = text.replace(/\s/g, '');
     let isThisMail = /[^0-9+()]/g.test(text), data;
@@ -45,48 +71,7 @@ class Functions {
       else if(text[0] == '9' && text.length == 12) data = '+90 (' + text.slice(2, 5) + ') ' + text.slice(5, 8) + ' ' + text.slice(8, 12);
       else if(text[0] == '+' && text.length == 13) data = '+90 (' + text.slice(3, 6) + ') ' + text.slice(6,9) + ' ' + text.slice(9, 13);
     }
-    return {mailMi: isThisMail, DATA: data};
-  };
-  // createToken = len => return 'a4Goo3ub8fY'; // Buffer.from()
-  timer = (time = 3, process, extraFeatures, isItFirstTime = true) => {
-    if(typeof(time) != 'number') time = 3;
-    time = Math.floor(time);
-    let id = this.timerName, color = 'green', backgroundColor = 'rgba(0,0,0,.2)';
-
-    if(typeof(extraFeatures) == 'object') {
-      id = extraFeatures.id ? extraFeatures.id : id;
-      color = extraFeatures.color ? extraFeatures.color : color;
-      backgroundColor = extraFeatures.backgroundColor ? extraFeatures.backgroundColor : backgroundColor;
-    }
-    
-    if(this.isTimerActive === false) {
-      time += 1;
-      id = 'a4Goo3ub8fY'; // this.createToken(8);
-      this.isTimerActive = true;
-      this.timerName = id;
-    }
-
-    let el = this.gid(this.timerName);
-
-    if(el) {
-      if(time == 1) {
-        this.isTimerActive = false;
-        el.innerHTML = '';
-        el.remove();
-        if(process && typeof(process) == 'function') process();
-      }
-      else {
-        time--;
-        el.innerHTML = `<div style="display:flex;justify-content:center;align-items:center;position:fixed;top:0;bottom:0;left:0;right:0;background-color:${backgroundColor};z-index:999;font-size:4em;font-weight: bold;color: ${color};">${time}</div>`;
-        setTimeout(()=>{this.timer(time, process, { id, color, backgroundColor }, false)},1000)
-      }
-    } else {
-      let newElement = document.createElement('div');
-      newElement.setAttribute('id', this.timerName);
-      document.body.appendChild(newElement);
-      this.timer(time, process, extraFeatures, false);
-      return;
-    }
+    return { Type: data ? isThisMail ? 'mail' : 'tel' : 'null', DATA: data };
   };
   image = (source) => {
     let image = new Image();

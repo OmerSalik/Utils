@@ -1,7 +1,12 @@
 class Functions {
-  constructor() { this.whenLoad(this.setStyle) }s
+  constructor() {
+    this.setKey();
+    this.whenLoad(this.setStyle);
+  }
+  Key = null;
   Style = `#fixed-container, *[modal-name], #utilTimer { top: 0; left: 0; right: 0; bottom: 0; display: flex; position: fixed; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, .3); } #utilTimer { color: green; font-weight: bold; font-size: xx-large; }`;
-  Timer = { active: false }
+  Timer = { active: false };
+  Variables = {};
   c = () => console.clear();
   clear = () => console.clear();
   mf = number => Math.floor(number);
@@ -26,10 +31,29 @@ class Functions {
   bekle = sure => new Promise(resolve => setTimeout(()=>resolve(true), sure * 1000));
   la = (array, fun) => array.forEach(element => this.log(fun ? fun(element) : element));
   display = (element,d='block') => element.style.display=element.style.display==d?'none':d;
-  variables = (key, value) => {if(value)this.Variables[key]=value;return this.Variables[key];};
+  variables = (key, value) => {if(value) this.Variables[key]=value;return this.Variables[key];};
   adv = (selector, event, fun) => this.qsa(selector).forEach(el => el.addEventListener(event, fun));
   setStyle = () => this.gid('utilStyle') ? this.gid('utilStyle').innerHTML = this.Style : document.body.innerHTML += `<style id="utilStyle">${this.Style}</style>`;
   modal = modalName => this.qs(`[modal-name="${modalName}"]`) ? this.qs(`[modal-name="${modalName}"]`).style.display == 'none' ? 'flex' : 'none' : this.error(`Modal '${modalName}' not found.`);
+  warn = (...warnList) => console.warn(...warnList);
+  setKey = async () => {
+    let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+    let key = '';
+    for (let i = 0; i < this.rs(16, 32); i++) key += letters.splice(this.rs(0, letters.length - 1), 1);
+    await this.w(.2);
+    this.Key = key;
+  }
+  token = (len = 16) => {
+    if(this.Key != null) {
+      let ttr = '';
+      for (let i = 0; i < len; i++) ttr += this.Key[this.rs(0, this.Key.length - 1)];
+      return ttr;
+    }
+    return new Promise(async (resolve) => {
+      await this.w(.1);
+      resolve(await this.token(len))
+    })
+  }
   timer = (duration = 3, extraFeatures = { function: () => {}, type: 'second', style: {} }, ...argList) => {
     return new Promise(async (resolve) => {
       let { active } = this.Timer;
@@ -46,7 +70,7 @@ class Functions {
         }
         el.remove();
         this.Timer.active = false;
-        extraFeatures.function(...argList);
+        extraFeatures.function && typeof(extraFeatures.function) == 'function' ? extraFeatures.function(...argList) : false;
         resolve('Timer finished');
         return;
       } else {

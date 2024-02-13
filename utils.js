@@ -36,6 +36,12 @@ class Functions {
   setStyle = () => this.gid('utilStyle') ? this.gid('utilStyle').innerHTML = this.Style : document.body.innerHTML += `<style id="utilStyle">${this.Style}</style>`;
   modal = modalName => this.qs(`[modal-name="${modalName}"]`) ? this.qs(`[modal-name="${modalName}"]`).style.display == 'none' ? 'flex' : 'none' : this.error(`Modal '${modalName}' not found.`);
   warn = (...warnList) => console.warn(...warnList);
+  selector = el => {
+    let [ ttr, atb ] = [ el.tagName, el.attributes ]
+    ttr += el.id ? '#' + el.id : ''; ttr += el.classList ? '.' + el.classList.value.replace(' ', '.') : '';
+    for (let i = 0; i < atb.length; i++) !['class', 'id'].includes(atb[i].name) ? ttr += `[${atb[i].name}="${atb[i].value}"]` : false;
+    return ttr;
+  }
   setKey = async () => {
     let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     let key = '';
@@ -90,10 +96,12 @@ class Functions {
       else data = text;
     } else {
       text = text.replace('(','').replace(')','');
-      if(text[0] == '5' && text.length == 10) data = '+90 (' + text.slice(0, 3) + ') ' + text.slice(3, 6) + ' ' + text.slice(6, 10);
+      if(text.length < 10) return { error: 'Phone number must be at least 10 characters' };
+      else if(text[0] == '5' && text.length == 10) data = '+90 (' + text.slice(0, 3) + ') ' + text.slice(3, 6) + ' ' + text.slice(6, 10);
       else if(text[0] == '0' && text.length == 11) data = '+90 (' + text.slice(1, 4) + ') ' + text.slice(4, 7) + ' ' + text.slice(7, 11);
       else if(text[0] == '9' && text.length == 12) data = '+90 (' + text.slice(2, 5) + ') ' + text.slice(5, 8) + ' ' + text.slice(8, 12);
       else if(text[0] == '+' && text.length == 13) data = '+90 (' + text.slice(3, 6) + ') ' + text.slice(6,9) + ' ' + text.slice(9, 13);
+      else return { error: 'Please enter a valid phone number.' };
     }
     return { Type: data ? isThisMail ? 'mail' : 'tel' : 'null', DATA: data };
   };

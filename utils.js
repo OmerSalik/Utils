@@ -1,12 +1,12 @@
 class Functions {
   constructor() {
     this.setKey();
-    this.whenLoad(this.setStyle);
+    this.whenLoad(this.begin);
   }
   Key = null;
   Style = `#fixed-container, *[modal-name], #utilTimer { top: 0; left: 0; right: 0; bottom: 0; display: flex; position: fixed; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, .3); } #utilTimer { color: green; font-weight: bold; font-size: xx-large; }`;
   Timer = { active: false };
-  Variables = {};
+  Variables = { };
   c = () => console.clear();
   clear = () => console.clear();
   mf = number => Math.floor(number);
@@ -34,8 +34,13 @@ class Functions {
   variables = (key, value) => {if(value) this.Variables[key]=value;return this.Variables[key];};
   adv = (selector, event, fun) => this.qsa(selector).forEach(el => el.addEventListener(event, fun));
   setStyle = () => this.gid('utilStyle') ? this.gid('utilStyle').innerHTML = this.Style : document.body.innerHTML += `<style id="utilStyle">${this.Style}</style>`;
+  turnOnYesScript = () => this.qsa('yesscript').forEach(el => el.style.display = this.ga(el, 'display') ? this.ga(el, 'display') : 'block' );
   modal = modalName => this.qs(`[modal-name="${modalName}"]`) ? this.qs(`[modal-name="${modalName}"]`).style.display == 'none' ? 'flex' : 'none' : this.error(`Modal '${modalName}' not found.`);
   warn = (...warnList) => console.warn(...warnList);
+  begin = async () => {
+    this.setStyle();
+    this.turnOnYesScript();
+  }
   selector = el => {
     let [ ttr, atb ] = [ el.tagName, el.attributes ]
     ttr += el.id ? '#' + el.id : ''; ttr += el.classList ? '.' + el.classList.value.replace(' ', '.') : '';

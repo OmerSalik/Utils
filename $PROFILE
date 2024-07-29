@@ -1,0 +1,89 @@
+function omer {
+    $desktopPath = [System.Environment]::GetFolderPath("Desktop")
+    $targetPath = Join-Path -Path $desktopPath -ChildPath "ASD"
+    Set-Location -Path $targetPath
+    Clear-Host
+}
+
+function angular {
+    param(
+        [string]$folderName
+    )
+
+    $desktopPath = [System.Environment]::GetFolderPath("Desktop")
+    $targetPath = Join-Path -Path $desktopPath -ChildPath "ASD/languages/angular/$folderName"
+
+    if (Test-Path -Path $targetPath -PathType Container) {
+        Set-Location -Path $targetPath
+        Clear-Host
+    }
+    else {
+        Write-Host "Klasor '$folderName' bulunamadi."
+    }
+}
+
+function games {
+    param(
+        [string]$folderName
+    )
+
+    $desktopPath = [System.Environment]::GetFolderPath("Desktop")
+    $targetPath = Join-Path -Path $desktopPath -ChildPath "ASD/games/$folderName"
+
+    if (Test-Path -Path $targetPath -PathType Container) {
+        Set-Location -Path $targetPath
+        Clear-Host
+    }
+    else {
+        Write-Host "Klasor '$folderName' bulunamadi."
+    }
+}
+
+
+function nodejs {
+    param(
+        [string]$folderName
+    )
+
+    $desktopPath = [System.Environment]::GetFolderPath("Desktop")
+    $targetPath = Join-Path -Path $desktopPath -ChildPath "ASD/languages/NodeJs/$folderName"
+
+    if (Test-Path -Path $targetPath -PathType Container) {
+        Set-Location -Path $targetPath
+        Clear-Host
+    }
+    else {
+        Write-Host "Klasor '$folderName' bulunamadi."
+    }
+}
+
+
+function a {
+    $desktopPath = [System.Environment]::GetFolderPath("Desktop")
+    $targetPath = Join-Path -Path $desktopPath -ChildPath "ASD/a"
+    Set-Location -Path $targetPath
+    Clear-Host
+}
+
+function xa {
+    Set-Location -Path "C:\xampp\htdocs"
+    Clear-Host
+}
+
+function pa {
+    Start-Process powershell -WindowStyle Normal
+    Clear-Host
+}
+
+function pdf {
+    $process = Start-Process -NoNewWindow -FilePath 'node' -ArgumentList 'main.js' -PassThru
+    Wait-Process -Id $process.Id
+    Invoke-Item -Path 'a.pdf'
+}
+
+function cn {
+    code .
+    Clear-Host
+}
+
+function c { Clear-Host }

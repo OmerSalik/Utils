@@ -136,8 +136,8 @@ class Functions {
       while(true) {
         if(document.readyState === 'complete') {
           resolve(true);
+          if(log) (console.log('load completed'), console.log(''));
           nextProcess();
-          if(log) console.log('load completed');
           break;
         } else {
           await new Promise(res => setTimeout(res, 50))
